@@ -6,4 +6,4 @@ CONDID=bh
 TRIAL=$SPEAKER-$CONDID
 WORKDIR=.
 
-python train.py --data-root data/$CONDID --speaker-id=${SPEAKERID[$SPEAKER]} --checkpoint-dir $WORKDIR/checkpoints/$TRIAL --preset presets/laughter-$CONDID.json --log-event-path log
+python ${WNPATH:-.}/train.py --data-root data/$CONDID --speaker-id=${SPEAKERID[$SPEAKER]} --checkpoint-dir $WORKDIR/checkpoints/$TRIAL --preset presets/laughter-$CONDID.json --log-event-path log $checkpointoption
