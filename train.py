@@ -112,7 +112,7 @@ class _NPYDataSource(FileDataSource):
 
     def interest_indices(self, paths):
         indices = np.arange(len(paths))
-        if self.test_size is None:
+        if self.test_size < 0: # in favor of "None". Sep 9 2019 hiroki
             test_size = self.test_num_samples / len(paths)
         else:
             test_size = self.test_size

@@ -74,7 +74,7 @@ def melspectrogram(y):
 
 def get_hop_size():
     hop_size = hparams.hop_size
-    if hop_size is None:
+    if hop_size < 0:
         assert hparams.frame_shift_ms is not None
         hop_size = int(hparams.frame_shift_ms / 1000 * hparams.sample_rate)
     return hop_size

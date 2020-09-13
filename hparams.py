@@ -69,6 +69,7 @@ hparams = tf.contrib.training.HParams(
 
     # Local conditioning (set negative value to disable))
     cin_channels=80,
+    question_fn="questions_laugh-bh.hed",
     # If True, use transposed convolutions to upsample conditional features,
     # otherwise repeat features to adjust time resolution
     upsample_conditional_features=True,
