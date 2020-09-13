@@ -33,11 +33,10 @@ if __name__ == "__main__":
 
     assert condid in ["bh", "c0"]
 
-    speaker = "04_MSY"
-    labpath = join(datapath, "labels", "full-timealign", speaker)
-    labfiles = sorted(glob(join(labpath, "{}_*.lab".format(speaker))))
+    labpath = join(datapath, "labels")
+    labfiles = sorted(glob(join(labpath, "*.lab")))
     mgcpath = join(datapath, "mgc")
-    binary_dict, continuous_dict = hts.load_question_set(join(datapath, "..", "questions", hparams.question_fn))
+    binary_dict, continuous_dict = hts.load_question_set(join(datapath, "questions", hparams.question_fn))
 
     for labfn in labfiles:
         # time-aligned context
@@ -53,7 +52,7 @@ if __name__ == "__main__":
                 context = linguistic_features
                 
             if condid == "c0":
-                mgcfn = join(mgcpath, speaker, re.sub('.lab$','.mgc', basename(labfn)))
+                mgcfn = join(mgcpath, re.sub('.lab$','.mgc', basename(labfn)))
                 fp = open(mgcfn, 'rb')
                 mgc = np.fromfile(fp, np.float32, -1) - np.log(32768)
                 fp.close()
@@ -65,7 +64,7 @@ if __name__ == "__main__":
                 context = np.hstack((linguistic_features, c0))
 
             context_filename = re.sub('.lab$','.npy', basename(labfn))
-            out_path = join(out_dir,condid,speaker)
+            out_path = join(out_dir,condid)
             os.makedirs(out_path, exist_ok=True)
             np.save(join(out_path, context_filename),
                     context.astype(np.float32), allow_pickle=False)
