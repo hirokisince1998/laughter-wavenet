@@ -1,5 +1,3 @@
-# 笑い声WaveNet
-
 # Dockerコンテナの起動
 
 laughter-wavenetの実行環境一式は Docker Hub からダウンロードできる。
@@ -14,13 +12,13 @@ docker pull hirokisince1998/laughter-wavenet
 docker run --gpus='"device=0"' --rm -it --ipc=host -v $PWD:/playground -w /playground --env WNPATH=/work/laughter-wavenet hirokisince1998/laughter-wavenet bash
 ```
 
-# Preprocessing
+# 前処理 (Preprocessing)
 
 ```
 bash scripts/preprocess-bh.sh
 ```
 
-# Training
+# 学習 (Training)
 
 ```
 bash scripts/04_MSY-bh.train.sh
@@ -32,7 +30,7 @@ bash scripts/04_MSY-bh.train.sh
 checkpointoption="--checkpoint=checkpoints/04_MSY-bh/checkpoint_step000031072.pth " bash scripts/04_MSY-bh-train.sh
 ```
 
-# 合成
+# 合成 (Synthesis)
 
 ## コンテキストラベルを生成する
 
@@ -41,16 +39,16 @@ checkpointoption="--checkpoint=checkpoints/04_MSY-bh/checkpoint_step000031072.pt
 ### b, Hラベルだけから生成 (loose conditioning用)
 
 ```
-python makecontext.py --preset=presets/laughter-bh.json bh (データパス) (出力パス)
+python $WNPATH/makecontext.py --preset=presets/laughter-bh.json bh (データパス) (出力パス)
 ```
 
 ### b, HラベルおよびC0から生成 (conditioning by power用)
 
 ```
-python makecontext.py --preset=presets/laughter-c0.json c0 (データパス) (出力パス)
+python $WNPATH/makecontext.py --preset=presets/laughter-c0.json c0 (データパス) (出力パス)
 ```
 
 ## b, Hラベルからの合成
 ```
-bash scripts/04_MSY-bh-resynth-gen.sh
+bash scripts/04_MSY-bh-fromlabel-gen.sh
 ```
