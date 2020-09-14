@@ -14,6 +14,8 @@ docker run --gpus='"device=0"' --rm -it --ipc=host -v $PWD:/playground -w /playg
 
 # 前処理 (Preprocessing)
 
+まず、b,h等のラベルファイルから補助特徴量のファイルを生成する必要がある。次のスクリプトを実行すると、data ディレクトリの中にある訓練用データのラベルファイルから補助特徴量に変換し、音声波形ファイルと合わせて、train.py が読み込める numpy 形式のファイルが生成される。
+
 ```
 bash scripts/preprocess-bh.sh
 ```
