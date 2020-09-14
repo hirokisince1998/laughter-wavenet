@@ -14,16 +14,23 @@ docker run --gpus='"device=0"' --rm -it --ipc=host -v $PWD:/playground -w /playg
 
 # 前処理 (Preprocessing)
 
+(dataディレクトリの構造を書く)
+
 まず、b,h等のラベルファイルから補助特徴量のファイルを生成する必要がある。次のスクリプトを実行すると、data ディレクトリの中にある訓練用データのラベルファイルから補助特徴量に変換し、音声波形ファイルと合わせて、train.py が読み込める numpy 形式のファイルが生成される。
 
 ```
 bash scripts/preprocess-bh.sh
 ```
 
+preprocess-bh.sh のヘルプ
+```
+
+
+
 # 学習 (Training)
 
 ```
-bash scripts/04_MSY-bh.train.sh
+bash scripts/04_MSY-bh-train.sh
 ```
 
 ## チェックポイントからの再開
@@ -54,3 +61,7 @@ python $WNPATH/makecontext.py --preset=presets/laughter-c0.json c0 (データパ
 ```
 bash scripts/04_MSY-bh-fromlabel-gen.sh
 ```
+
+# TODO
+- JSONファイルのどこを書き換えればよいのか
+- ファイルの依存関係の説明を加筆 (questions_laugh-bh.hed という名前は json ファイルの中で指定されている、とか)
