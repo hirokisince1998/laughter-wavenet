@@ -139,7 +139,7 @@ out_dir は補助特徴量ファイルを書き出すディレクトリ。
 
 (データパス)の下に labels, mgc, questions が必要。questions は、HTK形式のコンテキストクラスタリング質問ファイル *.hed を格納したディレクトリ。
 
-**** train.py
+#### train.py
 
 ```
 Trainining script for WaveNet vocoder
@@ -159,7 +159,7 @@ options:
     -h, --help                   Show this help message and exit
 ```
 
-**** synthesis.py
+#### synthesis.py
 
 ```
 Synthesis waveform from trained WaveNet.
