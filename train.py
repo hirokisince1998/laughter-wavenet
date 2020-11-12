@@ -230,9 +230,10 @@ class PartialyRandomizedSimilarTimeLengthSampler(Sampler):
 
 
 class PyTorchDataset(object):
-    def __init__(self, X, Mel):
+    def __init__(self, X, Mel, files):
         self.X = X
         self.Mel = Mel
+        self.files = files
         # alias
         self.multi_speaker = X.file_data_source.multi_speaker
 
@@ -249,7 +250,7 @@ class PyTorchDataset(object):
             speaker_id = None
 
         # (x,c,g)
-        return raw_audio, mel, speaker_id
+        return raw_audio, mel, speaker_id, self.files[idx]
 
     def __len__(self):
         return len(self.X)
@@ -376,7 +377,7 @@ def collate_fn(batch):
     if local_conditioning:
         new_batch = []
         for idx in range(len(batch)):
-            x, c, g = batch[idx]
+            x, c, g, filename = batch[idx]
             if hparams.upsample_conditional_features:
                 assert_ready_for_upsampling(x, c)
                 if max_time_steps is not None:
@@ -389,17 +390,19 @@ def collate_fn(batch):
                         c = c[s:s + max_time_frames, :]
                         assert_ready_for_upsampling(x, c)
             else:
+                if hparams.debug_level >= 1:
+                    print("Processing: {}".format(filename))
                 x, c = audio.adjust_time_resolution(x, c)
                 if max_time_steps is not None and len(x) > max_time_steps:
                     s = np.random.randint(0, len(x) - max_time_steps)
                     x, c = x[s:s + max_time_steps], c[s:s + max_time_steps, :]
                 assert len(x) == len(c)
-            new_batch.append((x, c, g))
+            new_batch.append((x, c, g, filename))
         batch = new_batch
     else:
         new_batch = []
         for idx in range(len(batch)):
-            x, c, g = batch[idx]
+            x, c, g, filename = batch[idx]
             x = audio.trim(x)
             if max_time_steps is not None and len(x) > max_time_steps:
                 s = np.random.randint(0, len(x) - max_time_steps)
@@ -407,7 +410,7 @@ def collate_fn(batch):
                     x, c = x[s:s + max_time_steps], c[s:s + max_time_steps, :]
                 else:
                     x = x[s:s + max_time_steps]
-            new_batch.append((x, c, g))
+            new_batch.append((x, c, g, filename))
         batch = new_batch
 
     # Lengths
@@ -886,14 +889,14 @@ def get_data_loaders(data_root, speaker_id, test_shuffle=True):
             sampler = None
             shuffle = test_shuffle
 
-        dataset = PyTorchDataset(X, Mel)
+        dataset = PyTorchDataset(X, Mel, X.collected_files)
         data_loader = data_utils.DataLoader(
             dataset, batch_size=hparams.batch_size,
             num_workers=hparams.num_workers, sampler=sampler, shuffle=shuffle,
             collate_fn=collate_fn, pin_memory=hparams.pin_memory)
 
         speaker_ids = {}
-        for idx, (x, c, g) in enumerate(dataset):
+        for idx, (x, c, g, filename) in enumerate(dataset):
             if g is not None:
                 try:
                     speaker_ids[g] += 1

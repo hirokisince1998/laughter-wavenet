@@ -40,6 +40,10 @@ def _process_utterance(out_dir, index, speaker_id, wav_path, mgc_path, lab_path,
     # Load the audio to a numpy array. Resampled if needed
     wav = audio.load_wav(wav_path)
 
+    # determine sessionID and uttID
+    wavbn = os.path.basename(wav_path)
+    uttID = os.path.splitext(wavbn)[0]
+
     if hparams.rescaling:
         wav = wav / np.abs(wav).max() * hparams.rescaling_max
 
@@ -85,8 +89,8 @@ def _process_utterance(out_dir, index, speaker_id, wav_path, mgc_path, lab_path,
     context = np.hstack((linguistic_features, c0))
 
     # Write the spectrograms to disk:
-    audio_filename = 'laughter-audio-%05d.npy' % index
-    context_filename = 'laughter-context-%05d.npy' % index
+    audio_filename = 'audio-' + uttID + '.npy'
+    context_filename = 'context-' + uttID + '.npy'
     np.save(os.path.join(out_dir, audio_filename),
             out.astype(out_dtype), allow_pickle=False)
     np.save(os.path.join(out_dir, context_filename),

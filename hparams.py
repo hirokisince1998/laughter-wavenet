@@ -127,6 +127,9 @@ hparams = tf.contrib.training.HParams(
     save_optimizer_state=True,
 
     # Eval:
+
+    # Debug
+    debug_level=0,
 )
 
 
