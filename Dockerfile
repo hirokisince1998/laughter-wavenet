@@ -1,9 +1,9 @@
 FROM nvcr.io/nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 RUN apt-get update && \
   apt-get install -y software-properties-common
-RUN add-apt-repository ppa:jonathonf/python-3.6
+RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update
-RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip
+RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip git
 RUN ln -s /usr/bin/python3.6 /usr/bin/python
 RUN python -m pip install pip --upgrade
 
